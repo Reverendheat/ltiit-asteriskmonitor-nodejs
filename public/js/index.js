@@ -4,16 +4,32 @@ $('document').ready(function(){
     var socket = io.connect('http://' + document.location.host);
     socket.on('added', (data) => {
         console.log(data);
-        if ($("#"+data.membername+"row").length) {
+        userInterface = data.interface.replace('/','');
+        userInterface = userInterface.replace('-',"");
+        if ($(`#${userInterface}row`).length) {
             console.log("tryin to change it")
-            $("#"+data.membername+"row").html("<td id=" + data.membername + ">" + data.membername + "</td>" + "<td id=" + data.membername + "status" + ' class="text-success"' + ">" + "Online</td>" + "<td id=" + data.membername + "queue" + ">" + data.queue  + "</td>")
+            $("#"+userInterface+"row").html("<td id=" + userInterface + ">" + data.membername + "</td>" + "<td id=" + userInterface + "status" + ' class="text-success"' + ">" + "Online</td>" + "<td id=" + userInterface + "queue" + ">" + data.queue  + "</td>")
+            console.log(`${data.membername} has has logged back into queue ${data.queue}`);
         } else {
-            $('#techtable tbody').append("<tr id= " + data.membername + "row" + ">" + "<td id=" + data.membername + ">" + data.membername + "</td>" + "<td id=" + data.membername + "status" + ' class="text-success"' + ">" + "Online</td>" + "<td id=" + data.membername + "queue" + ">" + data.queue  + "</td>" + "</tr>")
+            console.log("Adding to Table..");
+            $("#techtable tbody").append(`
+            <tr id="${userInterface}row">
+            <td id="${userInterface}">${data.membername}</td>
+            <td id="${userInterface}status" class="text-success">Online</td>
+            <td id="${userInterface}queue">${data.queue}</td>
+            </tr>`)
+            console.log(`${data.membername} has logged into queue ${data.queue}`);
         }
     })
     socket.on('removed', (data) => {
         console.log(data);
-        $("#"+data.membername+"row").html("<td id=" + data.membername + ">" + data.membername + "</td>" + "<td id=" + data.membername + "status" + ' class="text-danger"' + ">" + "Offline</td>" + "<td id=" + data.membername + "queue" + ">" + data.queue  + "</td>")
-        $('#'+data.membername+'queue').text('Offline')
+        userInterface = data.interface.replace('/','');
+        userInterface = userInterface.replace('-',"");
+        $(`#${userInterface}row`).html(`
+        <td id="${userInterface}">${data.membername}</td>
+        <td id="${userInterface}status" class="text-danger">Offline</td>
+        <td id="${userInterface}queue">${data.queue}</td>`)
+        $(`#${userInterface}queue`).text('Offline')
+        console.log(`${data.membername} is logging out of queue ${data.queue}`);
     })
 });
