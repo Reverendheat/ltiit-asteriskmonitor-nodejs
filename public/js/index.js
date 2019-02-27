@@ -24,6 +24,12 @@ function getCurrentMembers() {
         });
     });
 }
+function setCopyRightDate(){
+    var d = new Date()
+    var n = d.getFullYear()
+    $(`#datediv`).html(`© ${n} Copyright:
+    <p> @Parakoopa</p>`);
+}
 
 $('document').ready(function(){
 
@@ -131,4 +137,5 @@ $('document').ready(function(){
         }
     })
     getCurrentMembers();
+    setCopyRightDate();
 });
