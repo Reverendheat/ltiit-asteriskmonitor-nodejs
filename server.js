@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
     });
 });
 
-//Get requests
+//Express Get requests
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
@@ -53,14 +53,12 @@ var ami = new require('asterisk-manager')(process.env.Asterisk_Port,process.env.
 
 ami.keepConnected();
 
-
-
-
+//When a user enters a queue, use this because more descriptive
 ami.on('queuememberadded', function(evt) {
     db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
         if (err) throw err;
         if (rows.length == 0) {
-            console.log("No results found.., adding to database");
+            console.log("Queue Memeber Added - No results found.., adding to database");
             db.run(`INSERT into users(username,loggedin,queue) VALUES ("${evt.membername}","${1}","${evt.queue}")`);
         } else {
             console.log(`${evt.membername} updated to ONLINE for ${evt.queue}`);
@@ -70,11 +68,12 @@ ami.on('queuememberadded', function(evt) {
     io.emit('added', evt);
 });
 
+//When a user leaves a queue, use this because more descriptive
 ami.on('queuememberremoved', function(evt) {
     db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
         if (err) throw err;
         if (rows.length == 0) {
-            console.log("No results found.., user will be added the next time they login.");
+            console.log("Queue Member Removed - No results found.., user will be added the next time they login.");
         } else {
             console.log(`${evt.membername} is going OFFLINE`);
             db.run(`UPDATE users SET loggedin ="${0}", queue="OFFLINE" WHERE username="${evt.membername}"`);
@@ -83,12 +82,13 @@ ami.on('queuememberremoved', function(evt) {
     io.emit('removed', evt);
 });
 
-//Fires when status changes
+//Fires when queue status changes
 ami.on('queuememberstatus', function(evt) {
     db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
+        console.log(evt);
         if (err) throw err;
         if (rows.length == 0) {
-            console.log("No results found.., user will be added the next time they login.");
+            console.log("Queue Member Status - No results found.., user will be added the next time they login.");
         } else {
             if (rows[0].loggedin == 1) {
                 if (evt.status == '1') {
@@ -122,4 +122,26 @@ ami.on('queuememberstatus', function(evt) {
         }
     })
     
+})
+
+//AMI Action to continously check member status
+setInterval(function() {
+    console.log("I am doing my 5 second check");
+    ami.action({
+        'action':'queuestatus',
+      }, function(err, res) {
+        if (err) throw err;
+      });
+  }, 5000);
+
+//Listen for the response of the action above
+ami.on('queuemember', function(evt) {
+    db.all(`SELECT * FROM users WHERE username="${evt.name}"`, (err,rows)=>{
+        if (err) throw err;
+        if (rows.length == 0) {
+            console.log("Queue Member - No results found.., user will be added the next time they login.");
+        } else {
+            console.log(`${evt.name} is currently in queue ${evt.queue}`);
+        }
+    })
 })
