@@ -1,1 +1,0 @@
-Add event call for queuememeberstatus and response.

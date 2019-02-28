@@ -1,5 +1,6 @@
 function getCurrentMembers() {
-    $.get('memberstatus', (data) => {
+    $.ajax({url: "/memberstatus", dataType : "json",contentType :"application/json",method:"GET", success: function(data){
+        console.log(data);
         data.forEach(element => {
             membername = element.username.replace('/','');
             membername = membername.replace('-',"");
@@ -22,7 +23,9 @@ function getCurrentMembers() {
                 </tr>`)
             }
         });
-    });
+      }, complete: function(){
+        $("#techtable").tablesorter({ sortList: [[3,1]]});
+      }});
 }
 function setCopyRightDate(){
     var d = new Date()

@@ -124,7 +124,7 @@ ami.on('queuememberstatus', function(evt) {
     
 })
 
-//AMI Action to continously check member status
+/* //AMI Action to continously check member status
 setInterval(function() {
     console.log("I am doing my 5 second check");
     ami.action({
@@ -144,4 +144,4 @@ ami.on('queuemember', function(evt) {
             console.log(`${evt.name} is currently in queue ${evt.queue}`);
         }
     })
-})
+}) */
