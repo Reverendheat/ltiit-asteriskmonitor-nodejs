@@ -40,7 +40,7 @@ $('document').ready(function(){
     socket.on('added', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(' ','');
+        membername = membername.replace(/\s+/g, '');;
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it")
             $(`#${membername}row`).html(`
@@ -64,7 +64,7 @@ $('document').ready(function(){
     socket.on('removed', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(' ','');
+        membername = membername.replace(/\s+/g, '');;
         $(`#${membername}row`).html(`
         <td id="${membername}">${data.membername}</td>
         <td id="${membername}status" class="text-danger">Offline</td>
@@ -76,7 +76,7 @@ $('document').ready(function(){
     socket.on('ringing', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(' ','');
+        membername = membername.replace(/\s+/g, '');;
         console.log("Ringing"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to Ringing")
@@ -89,7 +89,7 @@ $('document').ready(function(){
     socket.on('ready', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(' ','');
+        membername = membername.replace(/\s+/g, '');;
         console.log("Ready"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to Ready")
@@ -102,7 +102,7 @@ $('document').ready(function(){
     socket.on('oncall', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(' ','');
+        membername = membername.replace(/\s+/g, '');;
         console.log("OnCall"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to On Call")
@@ -115,7 +115,7 @@ $('document').ready(function(){
     socket.on('onhold', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(' ','');
+        membername = membername.replace(/\s+/g, '');;
         console.log("OnHold"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to On Hold")
@@ -128,7 +128,7 @@ $('document').ready(function(){
     socket.on('unavailable', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(' ','');
+        membername = membername.replace(/\s+/g, '');;
         console.log("unavailable"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to unavailable")
