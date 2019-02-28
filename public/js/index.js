@@ -1,6 +1,5 @@
 function getCurrentMembers() {
     $.ajax({url: "/memberstatus", dataType : "json",contentType :"application/json",method:"GET", success: function(data){
-        console.log(data);
         data.forEach(element => {
             membername = element.username.replace('/','');
             membername = membername.replace('-',"");
@@ -63,7 +62,6 @@ $('document').ready(function(){
         }
     })
     socket.on('removed', (data) => {
-        console.log(data);
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(' ','');
@@ -76,22 +74,23 @@ $('document').ready(function(){
         console.log(`${data.membername} is logging out of queue ${data.queue}`);
     })
     socket.on('ringing', (data) => {
-        console.log(data);
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(' ','');
+        console.log("Ringing"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to Ringing")
             $(`#${membername}callstatus`).text(`Ringing`).addClass('text-success');
             console.log(`${data.membername} phone is ringing!`);
         } else {
             return;
-        }        
+        }
     })
     socket.on('ready', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(' ','');
+        console.log("Ready"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to Ready")
             $(`#${membername}callstatus`).text(`Ready`).removeClass('text-success text-danger');
@@ -101,10 +100,10 @@ $('document').ready(function(){
         }
     })
     socket.on('oncall', (data) => {
-        console.log(data);
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(' ','');
+        console.log("OnCall"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to On Call")
             $(`#${membername}callstatus`).text(`On Call`).removeClass('text-success text-danger');
@@ -114,10 +113,10 @@ $('document').ready(function(){
         }
     })
     socket.on('onhold', (data) => {
-        console.log(data);
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(' ','');
+        console.log("OnHold"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to On Hold")
             $(`#${membername}callstatus`).text(`On Hold`);
@@ -127,10 +126,10 @@ $('document').ready(function(){
         }
     })
     socket.on('unavailable', (data) => {
-        console.log(data);
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(' ','');
+        console.log("unavailable"+membername);
         if ($(`#${membername}row`).length) {
             console.log("tryin to change it to unavailable")
             $(`#${membername}callstatus`).text(`Unavailable`).removeClass('text-success').addClass('text-danger');
