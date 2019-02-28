@@ -3,7 +3,7 @@ function getCurrentMembers() {
         data.forEach(element => {
             membername = element.username.replace('/','');
             membername = membername.replace('-',"");
-            membername = membername.replace(' ','');
+            membername = membername.replace(/\s+/g, '');
             if (element.loggedin == 1) {
                 $("#techtable tbody").append(`
                 <tr id="${membername}row">
