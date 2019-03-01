@@ -12,7 +12,7 @@ function getCurrentMembers() {
                 <td id="${membername}queue">${element.queue}</td>
                 <td id="${membername}callstatus">Ready</td>
                 </tr>`)
-            } else {
+            } /* else {
                 $("#techtable tbody").append(`
                 <tr id="${membername}row">
                 <td id="${membername}">${element.username}</td>
@@ -20,7 +20,7 @@ function getCurrentMembers() {
                 <td id="${membername}queue">Offline</td>
                 <td id="${membername}callstatus">Offline</td>
                 </tr>`)
-            }
+            } */
         });
       }, complete: function(){
         $("#techtable").tablesorter({ sortList: [[3,1]]});
@@ -64,13 +64,14 @@ $('document').ready(function(){
     socket.on('removed', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');;
-        $(`#${membername}row`).html(`
+        membername = membername.replace(/\s+/g, '');
+        $(`#${data.membername}row`).remove();
+/*         $(`#${membername}row`).html(`
         <td id="${membername}">${data.membername}</td>
         <td id="${membername}status" class="text-danger">Offline</td>
         <td id="${membername}queue">${data.queue}</td>
         <td id="${membername}callstatus">Offline</td>`)
-        $(`#${membername}queue`).text('Offline')
+        $(`#${membername}queue`).text('Offline') */
         console.log(`${data.membername} is logging out of queue ${data.queue}`);
     })
     socket.on('ringing', (data) => {
