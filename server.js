@@ -9,14 +9,6 @@ db.serialize(function() {
     db.run("CREATE TABLE IF NOT EXISTS users (username TEXT,loggedin INTEGER, queue TEXT)");
 });
 
-//Proxy to 80 from 3000
-httpProxy = require('http-proxy');
-//
-// Create your proxy server and set the target in the options.
-//
-httpProxy.createProxyServer({target:'http://localhost:3000'}).listen(80);
-
-
 //Express Web Server Requirements
 const express = require('express');
 const app = express();
