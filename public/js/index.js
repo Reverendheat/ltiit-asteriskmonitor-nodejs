@@ -65,7 +65,7 @@ $('document').ready(function(){
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(/\s+/g, '');
-        $(`#${data.membername}row`).remove();
+        $(`#${membername}row`).remove();
 /*         $(`#${membername}row`).html(`
         <td id="${membername}">${data.membername}</td>
         <td id="${membername}status" class="text-danger">Offline</td>
