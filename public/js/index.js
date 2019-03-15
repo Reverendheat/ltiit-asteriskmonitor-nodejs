@@ -40,49 +40,50 @@ $('document').ready(function(){
     socket.on('added', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');;
+        membername = membername.replace(/\s+/g, '');
+        //If the user is already in the list
         if ($(`#${membername}row`).length) {
-            console.log("tryin to change it")
+            $(`#${membername}queue`).append(`<p id=p${data.queue}>${data.queue}</p>`);
+            /* console.log("tryin to change it")
             $(`#${membername}row`).html(`
             <td id="${membername}">${data.membername}</td>
             <td id="${membername}status" class="text-success">Online</td>
             <td id="${membername}queue">${data.queue}</td>
             <td id="${membername}callstatus">Ready</td>`)
-            console.log(`${data.membername} has has logged back into queue ${data.queue}`);
+            console.log(`${data.membername} has has logged back into queue ${data.queue}`); */
         } else {
-            console.log("Adding to Table..");
+            //Add them to the table if not
             $("#techtable tbody").append(`
             <tr id="${membername}row">
             <td id="${membername}">${data.membername}</td>
             <td id="${membername}status" class="text-success">Online</td>
-            <td id="${membername}queue">${data.queue}</td>
+            <td id="${membername}queue"><p id=p${data.queue}>${data.queue}</p></td>
             <td id="${membername}callstatus">Ready</td>
             </tr>`)
-            console.log(`${data.membername} has logged into queue ${data.queue}`);
         }
     })
     socket.on('removed', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(/\s+/g, '');
-        $(`#${membername}row`).remove();
+        $(`#p${data.queue}`).remove();
+        if (!$(`#${membername}queue`).text().length) {
+            $(`#${membername}row`).remove();
+        }
+        //$(`#${membername}row`).remove();
 /*         $(`#${membername}row`).html(`
         <td id="${membername}">${data.membername}</td>
         <td id="${membername}status" class="text-danger">Offline</td>
         <td id="${membername}queue">${data.queue}</td>
         <td id="${membername}callstatus">Offline</td>`)
         $(`#${membername}queue`).text('Offline') */
-        console.log(`${data.membername} is logging out of queue ${data.queue}`);
     })
     socket.on('ringing', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');;
-        console.log("Ringing"+membername);
+        membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
-            console.log("tryin to change it to Ringing")
             $(`#${membername}callstatus`).text(`Ringing`).addClass('text-success');
-            console.log(`${data.membername} phone is ringing!`);
         } else {
             return;
         }
@@ -90,12 +91,9 @@ $('document').ready(function(){
     socket.on('ready', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');;
-        console.log("Ready"+membername);
+        membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
-            console.log("tryin to change it to Ready")
             $(`#${membername}callstatus`).text(`Ready`).removeClass('text-success text-danger');
-            console.log(`${data.membername} phone is ringing!`);
         } else {
             return;
         }
@@ -103,12 +101,9 @@ $('document').ready(function(){
     socket.on('oncall', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');;
-        console.log("OnCall"+membername);
+        membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
-            console.log("tryin to change it to On Call")
             $(`#${membername}callstatus`).text(`On Call`).removeClass('text-success text-danger');
-            console.log(`${data.membername} is on a call!`);
         } else {
             return;
         }
@@ -116,12 +111,9 @@ $('document').ready(function(){
     socket.on('onhold', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');;
-        console.log("OnHold"+membername);
+        membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
-            console.log("tryin to change it to On Hold")
             $(`#${membername}callstatus`).text(`On Hold`);
-            console.log(`${data.membername} is on hold`);
         } else {
             return;
         }
@@ -129,12 +121,9 @@ $('document').ready(function(){
     socket.on('unavailable', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');;
-        console.log("unavailable"+membername);
+        membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
-            console.log("tryin to change it to unavailable")
             $(`#${membername}callstatus`).text(`Unavailable`).removeClass('text-success').addClass('text-danger');
-            console.log(`${data.membername} is unavailable`);
         } else {
             return;
         }
