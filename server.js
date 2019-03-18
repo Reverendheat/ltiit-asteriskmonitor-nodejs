@@ -63,16 +63,6 @@ ami.on('queuememberadded', function(evt) {
             db.run(`UPDATE users SET active=${1} WHERE username="${evt.membername}" AND queue="${evt.queue}"`);
         }
     });
-/*     db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
-        if (err) throw err;
-        if (rows.length == 0) {
-            console.log("Queue Memeber Added - No results found.., adding to database");
-            db.run(`INSERT into users(username,loggedin,queue) VALUES ("${evt.membername}","${1}","${evt.queue}")`);
-        } else {
-            console.log(`${evt.membername} updated to ONLINE for ${evt.queue}`);
-            db.run(`UPDATE users SET loggedin ="${1}", queue="${evt.queue}" WHERE username="${evt.membername}"`);
-        }
-    }) */
     io.emit('added', evt);
 });
 
@@ -87,15 +77,6 @@ ami.on('queuememberremoved', function(evt) {
             db.run(`UPDATE users SET active=${0} WHERE username="${evt.membername}" AND queue="${evt.queue}"`);
         }
     });
-    /* db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
-        if (err) throw err;
-        if (rows.length == 0) {
-            console.log("Queue Member Removed - No results found.., user will be added the next time they login.");
-        } else {
-            console.log(`${evt.membername} is going OFFLINE`);
-            db.run(`UPDATE users SET loggedin ="${0}", queue="OFFLINE" WHERE username="${evt.membername}"`);
-        }
-    }) */
     io.emit('removed', evt);
 });
 
@@ -137,27 +118,4 @@ ami.on('queuememberstatus', function(evt) {
             }
         }
     })
-    
 })
-
-/* //AMI Action to continously check member status
-setInterval(function() {
-    console.log("I am doing my 5 second check");
-    ami.action({
-        'action':'queuestatus',
-      }, function(err, res) {
-        if (err) throw err;
-      });
-  }, 5000);
-
-//Listen for the response of the action above
-ami.on('queuemember', function(evt) {
-    db.all(`SELECT * FROM users WHERE username="${evt.name}"`, (err,rows)=>{
-        if (err) throw err;
-        if (rows.length == 0) {
-            console.log("Queue Member - No results found.., user will be added the next time they login.");
-        } else {
-            console.log(`${evt.name} is currently in queue ${evt.queue}`);
-        }
-    })
-}) */

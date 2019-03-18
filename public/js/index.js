@@ -16,15 +16,7 @@ function getCurrentMembers() {
                 <td id="${membername}callstatus">Ready</td>
                 </tr>`)
                 }
-            } /* else {
-                $("#techtable tbody").append(`
-                <tr id="${membername}row">
-                <td id="${membername}">${element.username}</td>
-                <td id="${membername}status" class="text-danger">Offline</td>
-                <td id="${membername}queue">Offline</td>
-                <td id="${membername}callstatus">Offline</td>
-                </tr>`)
-            } */
+            } 
         });
       }, complete: function(){
         $("#techtable").tablesorter({ sortList: [[3,1]]});
@@ -48,39 +40,7 @@ $('document').ready(function(){
         //If the user is already in the list
         if ($(`#${membername}row`).length) {
             $(`#${membername}queue`).append(`<p id=p${data.queue}>${data.queue}</p>`);
-            /* console.log("tryin to change it")
-            $(`#${membername}row`).html(`
-            <td id="${membername}">${data.membername}</td>
-            <td id="${membername}status" class="text-success">Online</td>
-            <td id="${membername}queue">${data.queue}</td>
-            <td id="${membername}callstatus">Ready</td>`)
-            console.log(`${data.membername} has has logged back into queue ${data.queue}`); */
-        } else {
-            //Add them to the table if not
-            $("#techtable tbody").append(`
-            <tr id="${membername}row">
-            <td id="${membername}">${data.membername}</td>
-            <td id="${membername}status" class="text-success">Online</td>
-            <td id="${membername}queue"><p id=p${data.queue}>${data.queue}</p></td>
-            <td id="${membername}callstatus">Ready</td>
-            </tr>`)
         }
-    })
-    socket.on('removed', (data) => {
-        membername = data.membername.replace('/','');
-        membername = membername.replace('-',"");
-        membername = membername.replace(/\s+/g, '');
-        $(`#p${data.queue}`).remove();
-        if (!$(`#${membername}queue`).text().length) {
-            $(`#${membername}row`).remove();
-        }
-        //$(`#${membername}row`).remove();
-/*         $(`#${membername}row`).html(`
-        <td id="${membername}">${data.membername}</td>
-        <td id="${membername}status" class="text-danger">Offline</td>
-        <td id="${membername}queue">${data.queue}</td>
-        <td id="${membername}callstatus">Offline</td>`)
-        $(`#${membername}queue`).text('Offline') */
     })
     socket.on('ringing', (data) => {
         membername = data.membername.replace('/','');
