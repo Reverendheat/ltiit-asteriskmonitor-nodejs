@@ -4,14 +4,18 @@ function getCurrentMembers() {
             membername = element.username.replace('/','');
             membername = membername.replace('-',"");
             membername = membername.replace(/\s+/g, '');
-            if (element.loggedin == 1) {
+            if (element.active == 1) {
+                if ($(`#${membername}row`).length) {
+                    $(`#${membername}queue`).append(`<p id=p${element.queue}>${element.queue}</p>`);
+                } else {
                 $("#techtable tbody").append(`
                 <tr id="${membername}row">
                 <td id="${membername}">${element.username}</td>
                 <td id="${membername}status" class="text-success">Online</td>
-                <td id="${membername}queue">${element.queue}</td>
+                <td id="${membername}queue"><p id=p${element.queue}>${element.queue}</p></td>
                 <td id="${membername}callstatus">Ready</td>
                 </tr>`)
+                }
             } /* else {
                 $("#techtable tbody").append(`
                 <tr id="${membername}row">

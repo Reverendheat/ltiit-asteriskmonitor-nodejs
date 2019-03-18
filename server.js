@@ -5,9 +5,7 @@ require('dotenv').config();
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('UserStatus.db');
 
-db.serialize(function() {
-    db.run("CREATE TABLE IF NOT EXISTS users (username TEXT,loggedin INTEGER, queue TEXT)");
-});
+db.serialize(function() {db.run("CREATE TABLE IF NOT EXISTS users (username TEXT, queue TEXT, active INTEGER)");});
 
 //Express Web Server Requirements
 const express = require('express');
@@ -55,7 +53,17 @@ ami.keepConnected();
 
 //When a user enters a queue, use this because more descriptive
 ami.on('queuememberadded', function(evt) {
-    db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
+    db.all(`SELECT * FROM users WHERE username="${evt.membername}" AND queue="${evt.queue}"`, (err,rows)=>{
+        if(err) throw err;
+        if (rows.length == 0) {
+            console.log('ADD - Trying to ADD a new entry');
+            db.run(`INSERT into users(username,queue,active) VALUES ("${evt.membername}","${evt.queue}",${1})`);
+        } else {
+            console.log('ADD - Trying to UPDATE an entry');
+            db.run(`UPDATE users SET active=${1} WHERE username="${evt.membername}" AND queue="${evt.queue}"`);
+        }
+    });
+/*     db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
         if (err) throw err;
         if (rows.length == 0) {
             console.log("Queue Memeber Added - No results found.., adding to database");
@@ -64,13 +72,22 @@ ami.on('queuememberadded', function(evt) {
             console.log(`${evt.membername} updated to ONLINE for ${evt.queue}`);
             db.run(`UPDATE users SET loggedin ="${1}", queue="${evt.queue}" WHERE username="${evt.membername}"`);
         }
-    })
+    }) */
     io.emit('added', evt);
 });
 
 //When a user leaves a queue, use this because more descriptive
 ami.on('queuememberremoved', function(evt) {
-    db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
+    db.all(`SELECT * FROM users WHERE username="${evt.membername}" AND queue="${evt.queue}"`, (err,rows)=>{
+        if(err) throw err;
+        if (rows.length == 0) {
+            console.log('Someone was removed, but they do not exist in the database');
+        } else {
+            console.log('REMOVE - Trying to UPDATE an entry')
+            db.run(`UPDATE users SET active=${0} WHERE username="${evt.membername}" AND queue="${evt.queue}"`);
+        }
+    });
+    /* db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
         if (err) throw err;
         if (rows.length == 0) {
             console.log("Queue Member Removed - No results found.., user will be added the next time they login.");
@@ -78,19 +95,18 @@ ami.on('queuememberremoved', function(evt) {
             console.log(`${evt.membername} is going OFFLINE`);
             db.run(`UPDATE users SET loggedin ="${0}", queue="OFFLINE" WHERE username="${evt.membername}"`);
         }
-    })
+    }) */
     io.emit('removed', evt);
 });
 
 //Fires when queue status changes
 ami.on('queuememberstatus', function(evt) {
     db.all(`SELECT * FROM users WHERE username="${evt.membername}"`, (err,rows)=>{
-        console.log(evt);
         if (err) throw err;
         if (rows.length == 0) {
             console.log("Queue Member Status - No results found.., user will be added the next time they login.");
         } else {
-            if (rows[0].loggedin == 1) {
+            if (rows[0].active == 1) {
                 if (evt.status == '1') {
                     console.log(`${evt.membername} is ready`);
                     io.emit('ready', evt)
