@@ -30,7 +30,6 @@ function setCopyRightDate(){
 }
 
 $('document').ready(function(){
-
     //Socket IO Client connection/Management
     var socket = io.connect('http://' + document.location.host);
     socket.on('added', (data) => {
@@ -39,9 +38,30 @@ $('document').ready(function(){
         membername = membername.replace(/\s+/g, '');
         //If the user is already in the list
         if ($(`#${membername}row`).length) {
-            $(`#${membername}queue`).append(`<p id=p${data.queue}>${data.queue}</p>`);
+            $(`#${membername}queue`).append(`<p id=p${membername+data.queue}>${data.queue}</p>`);
         }
-    })
+        else {
+            //Add them to the table if not
+            $("#techtable tbody").append(`
+            <tr id="${membername}row">
+            <td id="${membername}">${data.membername}</td>
+            <td id="${membername}status" class="text-success">Online</td>
+            <td id="${membername}queue"><p id=p${membername+data.queue}>${data.queue}</p></td>
+            <td id="${membername}callstatus">Ready</td>
+            </tr>`)
+        }
+    });
+
+    socket.on('removed', (data) => {
+        membername = data.membername.replace('/','');
+        membername = membername.replace('-',"");
+        membername = membername.replace(/\s+/g, '');
+        $(`#p${membername+data.queue}`).remove();
+        if (!$(`#${membername}queue`).text().length) {
+            $(`#${membername}row`).remove();
+        }
+    });
+
     socket.on('ringing', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
