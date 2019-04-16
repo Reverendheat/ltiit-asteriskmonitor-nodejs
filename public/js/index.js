@@ -14,6 +14,7 @@ function getCurrentMembers() {
                 <td id="${membername}status" class="text-success">Online</td>
                 <td id="${membername}queue"><p id=p${element.queue}>${element.queue}</p></td>
                 <td id="${membername}callstatus">Ready</td>
+                <td id="${membername}callduration"></td>
                 </tr>`)
                 }
             } 
@@ -22,11 +23,23 @@ function getCurrentMembers() {
         $("#techtable").tablesorter({ sortList: [[3,1]]});
       }});
 }
+
 function setCopyRightDate(){
     var d = new Date()
     var n = d.getFullYear()
     $(`#datediv`).html(`© ${n} Copyright:
     <p> @Parakoopa</p>`);
+}
+
+let timer = "";
+function callTimer(start,membername) {
+        timer = setInterval(()=>{
+        let now = moment()
+        let diff = now.diff(start, "seconds", true)
+        let duration = new Date(diff * 1000).toISOString().substr(11, 8)
+        console.log(duration);
+        $(`#${membername}callduration`).text(duration)
+    },1000)
 }
 
 $('document').ready(function(){
@@ -48,6 +61,7 @@ $('document').ready(function(){
             <td id="${membername}status" class="text-success">Online</td>
             <td id="${membername}queue"><p id=p${membername+data.queue}>${data.queue}</p></td>
             <td id="${membername}callstatus">Ready</td>
+            <td id="${membername}callduration"></td>
             </tr>`)
         }
     });
@@ -72,26 +86,35 @@ $('document').ready(function(){
             return;
         }
     })
+
     socket.on('ready', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
             $(`#${membername}callstatus`).text(`Ready`).removeClass('text-success text-danger');
+            clearInterval(timer);
+            $(`#${membername}callduration`).empty();
         } else {
             return;
         }
     })
+
     socket.on('oncall', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
             $(`#${membername}callstatus`).text(`On Call`).removeClass('text-success text-danger');
+            if ($(`#${membername}callduration`).text() == "") {
+                console.log('timer for your')
+                callTimer(moment(),membername);
+            }
         } else {
             return;
         }
     })
+    
     socket.on('onhold', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
@@ -102,6 +125,7 @@ $('document').ready(function(){
             return;
         }
     })
+
     socket.on('unavailable', (data) => {
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
@@ -112,6 +136,8 @@ $('document').ready(function(){
             return;
         }
     })
+
     getCurrentMembers();
     setCopyRightDate();
+
 });

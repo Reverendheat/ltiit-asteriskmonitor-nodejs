@@ -38,6 +38,7 @@ d8'  ,8P"88"  88  88      ,8P                                      88
                   <th scope="col">Status</th>
                   <th scope="col">Queue</th>
                   <th scope="col">Call Status</th>
+                  <th scope="col">Call Duration</th>
                 </tr>
               </thead>
               <tbody>
@@ -76,6 +77,7 @@ d8'  ,8P"88"  88  88      ,8P                                      88
                         <h6>What is this?</h6>
                           <p>This will show users/phones who are logged into a queue (dymanic queue, aka First Responder and Dispatcher), and if their phone is ringing, on a call currently, has someone on hold, or is ready to take a call.</p>
                         <h6>Update</h6>
+                          <p>4/16/2019 - Added call duration, however setInterval (js) is notoriously "whack". Be on the lookout for errors.</p>
                           <p>4/02/2019 - Half of the client-side JS mysteriously vanished. Whoops.</p>                        
                           <p>3/20/2019 - Aaron told me I misspelled something, so I corrected it, and here I thought no one was even reading this.</p>
                           <p>3/15/2019 - First Responders were disappearing from the list, due to entering the dispatch queue. Added the option for multiple queues.</p>
@@ -111,6 +113,7 @@ d8'  ,8P"88"  88  88      ,8P                                      88
       </div>
         
     <!-- Optional JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.1/js/jquery.tablesorter.min.js"></script>
