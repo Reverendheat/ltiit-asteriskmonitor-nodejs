@@ -33,11 +33,10 @@ function setCopyRightDate(){
 
 let timer = "";
 function callTimer(start,membername) {
-        timer = setInterval(()=>{
+        timer = setInterval(function () {
         let now = moment()
         let diff = now.diff(start, "seconds", true)
         let duration = new Date(diff * 1000).toISOString().substr(11, 8)
-        console.log(duration);
         $(`#${membername}callduration`).text(duration)
     },1000)
 }
