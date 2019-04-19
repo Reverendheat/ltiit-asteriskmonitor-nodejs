@@ -31,14 +31,15 @@ function setCopyRightDate(){
     <p> @Parakoopa</p>`);
 }
 
-let timer = "";
+let timer = [];
 function callTimer(start,membername) {
-        timer = setInterval(function () {
+        timer.push(setInterval(function () {
         let now = moment()
         let diff = now.diff(start, "seconds", true)
         let duration = new Date(diff * 1000).toISOString().substr(11, 8)
         $(`#${membername}callduration`).text(duration)
-    },1000)
+        console.log(duration);
+    },1000));
 }
 
 $('document').ready(function(){
@@ -92,7 +93,9 @@ $('document').ready(function(){
         membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
             $(`#${membername}callstatus`).text(`Ready`).removeClass('text-success text-danger');
-            clearInterval(timer);
+            timer.forEach((timer) => {
+                clearInterval(timer);  
+            });
             $(`#${membername}callduration`).empty();
         } else {
             return;
@@ -100,13 +103,14 @@ $('document').ready(function(){
     })
 
     socket.on('oncall', (data) => {
+        console.log('On call fired');
         membername = data.membername.replace('/','');
         membername = membername.replace('-',"");
         membername = membername.replace(/\s+/g, '');
         if ($(`#${membername}row`).length) {
             $(`#${membername}callstatus`).text(`On Call`).removeClass('text-success text-danger');
             if ($(`#${membername}callduration`).text() == "") {
-                console.log('timer for your')
+                console.log(`Timer starting for ${membername}`);
                 callTimer(moment(),membername);
             }
         } else {
