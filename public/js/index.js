@@ -72,6 +72,9 @@ $('document').ready(function(){
         membername = membername.replace(/\s+/g, '');
         $(`#p${membername+data.queue}`).remove();
         if (!$(`#${membername}queue`).text().length) {
+            timer.forEach((timer) => {
+                clearInterval(timer);  
+            });
             $(`#${membername}row`).remove();
         }
     });
